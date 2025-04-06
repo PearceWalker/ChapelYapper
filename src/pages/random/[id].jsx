@@ -442,7 +442,7 @@ export default function Room() {
                             <input  id="file" type="file" onChange={handleFiles} className="h-full w-full text-white mx-1 absolute opacity-0"></input>
                                 </div>
                             </button>
-                            <button type="submit" disabled={members.filter(a=>a).length == 1} className={members.filter(a=>a).length == 1 ? `bg-zinc-500/10 hover:bg-zinc-500/20 rounded-md p-2 ml-2 transition-all duration-200 cursor-not-allowed` : `bg-zinc-500/10 hover:bg-zinc-500/20 rounded-md p-2 ml-2 transition-all duration-200`}>
+                            <button type="submit" disabled={members.filter(a=>a).length == 1} className={members.filter(a=>a).length == 1 ? `bg-zinc-500/10 hover:bg-zinc-500/20 rounded-md py-2 px-8 ml-2 transition-all duration-200 cursor-not-allowed` : `bg-zinc-500/10 hover:bg-zinc-500/20 rounded-md py-2 px-8 ml-2 transition-all duration-200`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                 </svg>
