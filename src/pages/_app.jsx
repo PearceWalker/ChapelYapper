@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     <SessionProvider session={session}>
       <ConnectionProvider>
         <Head>
-        <link rel="icon" href="assets/logo.png" />
+        <link rel="icon" href="assets/Logo.png" />
 
           <title>{mainConfig.nameApp}</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
