@@ -39,6 +39,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col justify-center items-center bg-dark-2">
+      <h1 className="text-white py-5">This app’s just for FHU students — log in with your @students.fhu.edu email to join.</h1>
       <button
         onClick={handleGoogleLogin}
         className="py-2.5 px-8 rounded text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-80"
