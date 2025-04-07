@@ -333,10 +333,24 @@ function CreateRoom(){
                 })}
             </div>
 
-            <div className="flex flex-col items-center space-y-3 mt-6 w-full">
+            <div className="flex flex-row items-center space-y-3 mt-6 w-full">
                 <div className="flex flex-row items-center space-x-2 w-full hover:bg-zinc-500/5 p-4 rounded-lg transition-all duration-200">
                     {!user?.verified ? <span className="font-semibold">{user?.username}</span> : <span className="font-semibold flex -flex-row items-center">{user?.username} <FontAwesomeIcon className=" h-3 mx-2" icon={faCheckCircle} /></span> }
                 </div>
+                <a
+                    href="/bug-report"
+                    title="Report a bug"
+                    className="hover:text-red-400 transition-colors duration-200"
+                >
+                    <FontAwesomeIcon icon={faBug} className="h-5 w-5" />
+                </a>
+                <a
+                    href="/suggest-feature"
+                    title="Suggest a feature"
+                    className="hover:text-yellow-300 transition-colors duration-200"
+                >
+                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
+                </a>
             </div>
         </div>}
         </motion.div>}
