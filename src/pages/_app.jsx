@@ -13,7 +13,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     <SessionProvider session={session}>
       <ConnectionProvider>
         <Head>
-          <title>{mainConfig.nameApp} | Chat with random people!</title>
+        <link rel="icon" href="assets/logo.png" />
+
+          <title>{mainConfig.nameApp}</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         </Head>
         {router.pathname.includes('rooms') ? (

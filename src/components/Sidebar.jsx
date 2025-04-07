@@ -2,10 +2,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useConnection } from "context/connect";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
-import { faCheckCircle, faComment, faLock, faPlus, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faComment, faLock, faPlus, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion, AnimatePresence } from "framer-motion"
 import { mainConfig } from "config/config";
+
 
 export default function Sidebar() {
     
@@ -253,7 +254,10 @@ function CreateRoom(){
 
         <div className="sticky top-0 md:h-screen md:w-96 bg-[var(--sidebar-color)] text-white p-6 md:flex md:flex-col md:justify-between hidden">
         <div className="flex flex-col items-center space-y-3">
+        <img src="/assets/Betterlogo.png" alt="" className="mx-auto w-32" />
+        <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
            <div className="flex flex-row rounded-lg w-full"> 
+                
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 </div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
@@ -276,15 +280,36 @@ function CreateRoom(){
                 })}
             </div>
 
-            <div className="flex flex-col items-center space-y-3 mt-6 w-full">
+            <div className="flex flex-row items-center space-y-3 mt-6 w-full">
                 <div className="flex flex-row items-center space-x-2 w-full hover:bg-zinc-500/5 p-4 rounded-lg transition-all duration-200">
                     {!user?.verified ? <span className="font-semibold">{user?.username}</span> : <span className="font-semibold flex -flex-row items-center">{user?.username} <FontAwesomeIcon className=" h-3 mx-2" icon={faCheckCircle} /></span> }
                 </div>
+                <div className="flex flex-row space-x-4 justify-center w-full mt-2 text-white">
+                <a
+                    href="/bug-report"
+                    title="Report a bug"
+                    className="hover:text-red-400 transition-colors duration-200"
+                >
+                    <FontAwesomeIcon icon={faBug} className="h-5 w-5" />
+                </a>
+                <a
+                    href="/suggest-feature"
+                    title="Suggest a feature"
+                    className="hover:text-yellow-300 transition-colors duration-200"
+                >
+                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
+                </a>
+
+</div>
+
             </div>
+            
         </div>
 
         {!onroom && <div className="absolute top-0 h-screen w-full bg-[var(--sidebar-color)] text-white p-6 md:hidden flex-col justify-between flex">
         <div className="flex flex-col items-center space-y-3">
+        <img src="/assets/Betterlogo.png" alt="" className="mx-auto w-32" />
+        <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
             
                 <div className="flex flex-row rounded-lg w-full"> 
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button></div>
