@@ -254,7 +254,7 @@ function CreateRoom(){
 
         <div className="sticky top-0 md:h-screen md:w-96 bg-[var(--sidebar-color)] text-white p-6 md:flex md:flex-col md:justify-between hidden">
         <div className="flex flex-col items-center space-y-3">
-        <img src="/assets/BetterLogo.png" alt="Logo" className="mx-auto w-32" />
+        <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
         <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
            <div className="flex flex-row rounded-lg w-full"> 
                 
@@ -308,7 +308,7 @@ function CreateRoom(){
 
         {!onroom && <div className="absolute top-0 h-screen w-full bg-[var(--sidebar-color)] text-white p-6 md:hidden flex-col justify-between flex">
         <div className="flex flex-col items-center space-y-3">
-        <img src="/assets/Betterlogo.png" alt="" className="mx-auto w-32" />
+        <img src="/assets/BetterLogoTiny.png" alt="" className="mx-auto w-32" />
         <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
             
                 <div className="flex flex-row rounded-lg w-full"> 
