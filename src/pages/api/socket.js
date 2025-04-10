@@ -1,11 +1,20 @@
 import { mainConfig } from "config/config";
 import { Server } from "socket.io";
+import { initDb } from '../../libraries/statsDb.js'; // adjust the path if needed
+
 
 export default (async (req, res) => {
   if (res.socket.server.io) {
     res.end();
     return;
   }
+
+  let db;
+
+  (async () => {
+  db = await initDb();
+  })();
+
 
   const io = new Server(res.socket.server, {
     pingInterval: 10000,
@@ -255,12 +264,23 @@ export default (async (req, res) => {
 
     socket.on("message", async data => {
       const room = Array.from(socket.rooms).find(room => room !== socket.id);
+      const username = socket.data.user?.username;
+
+
       if (!room) return;
 
       var message = {
         user: socket.data.user,
         message: data.message,
         date: new Date(),
+      }
+
+      if (username && db) {
+        await db.run(`
+          INSERT INTO message_counts (username, count)
+          VALUES (?, 1)
+          ON CONFLICT(username) DO UPDATE SET count = count + 1
+        `, [username]);
       }
 
       if (data.file && data.type == "image/jpeg" || data.type == "image/png" ){

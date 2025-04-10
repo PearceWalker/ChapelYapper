@@ -328,10 +328,10 @@ export default function Room() {
             <div className="col-span-9 2xl:w-full">
                 <div className="border-b border-zinc-500/5 flex items-center justify-between px-6 py-5 text-white">
                     <div className="flex items-center">
-                        <img src={mainConfig.initialsAPI + "ac"} alt="username" className="w-14 h-14 rounded-full" />
+                        
                         <div className="ml-3">
-                            <p className="text-lg font-medium flex items-center">{members.filter(a=>a).length == 1 ? <p>Waiting stranger...</p> : <p>Anonymous Chat</p>}</p>
-                            <p className="text-xs font-medium italic text-gray-500">{members.filter(a=>a).length == 1 ? <p>Searching stranger to talk...</p> : <p>This room is with a stranger. </p>}</p>
+                            <p className="text-lg font-medium flex items-center">{members.filter(a=>a).length == 1 ? <p>Waiting on stranger...</p> : <p>Anonymous Chat</p>}</p>
+                            <p className="text-xs font-medium italic text-gray-500">{members.filter(a=>a).length == 1 ? <p>Searching for stranger to talk...</p> : <p>This room is with a stranger. </p>}</p>
                         </div>
                     </div>
                     <div className="flex flex-row items-center">

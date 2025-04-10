@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useConnection } from "context/connect";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
-import { faCheckCircle, faComment, faLock, faPlus, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faComment, faLock, faPlus, faHeartbeat, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion, AnimatePresence } from "framer-motion"
 import { mainConfig } from "config/config";
@@ -20,9 +20,27 @@ export default function Sidebar() {
     let [onroom, setOnroom] = useState(false);
     let [online, setOnline] = useState(0);
     const { pathname } = useRouter();
-/*     random user */
+    const [chapelTime, setChapelTime] = useState(false);
 
+/*     Chapel */
 
+    useEffect(() => {
+        const checkChapelTime = () => {
+        const now = new Date();
+        const isChapel =
+            now.getDay() >= 1 && now.getDay() <= 5 && // Monday–Friday
+            now.getHours() === 10 &&
+            now.getMinutes() >= 30 &&
+            now.getMinutes() <= 59;
+  
+        setChapelTime(isChapel);
+    };
+  
+        checkChapelTime();
+        const interval = setInterval(checkChapelTime, 60000); 
+  
+        return () => clearInterval(interval);
+        }, []);
 
 /* rooms */
 
@@ -211,7 +229,9 @@ function CreateRoom(){
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-[var(--sidebar-color)] p-6 text-left align-middle shadow-xl transition-all">
+                                <Dialog.Panel className={`w-full max-w-md transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all ${
+                                chapelTime ? "bg-[#661424] text-white" : "bg-[var(--sidebar-color)] text-white"
+                                }`}>
                                 <Dialog.Title
                                     as="h3"
                                     className="text-lg font-medium leading-6 text-white"
@@ -228,11 +248,14 @@ function CreateRoom(){
                                         </p>
 
                                         <input
-                                            type="password"
-                                            className="w-full mt-2 p-2 rounded-md bg-[var(--sidebar-color)] text-white outline-none border border-white/5 focus:border-gray-500 transition-all duration-200"
-                                            value={password}
-                                            onChange={e => setPassword(e.target.value)}
+                                        type="password"
+                                        className={`w-full mt-2 p-2 rounded-md text-white outline-none border border-white/5 focus:border-gray-500 transition-all duration-200 ${
+                                        chapelTime ? "bg-[#661424]" : "bg-[var(--sidebar-color)]"
+                                        }`}
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
                                         />
+
                                     </div>
 
                                     <div className="mt-4">
@@ -252,15 +275,29 @@ function CreateRoom(){
             </Dialog>
         </Transition>
 
-        <div className="sticky top-0 md:h-screen md:w-96 bg-[var(--sidebar-color)] text-white p-6 md:flex md:flex-col md:justify-between hidden">
+        <div className={`sticky top-0 md:h-screen md:w-96 text-white p-6 md:flex md:flex-col md:justify-between hidden ${
+        chapelTime ? "bg-[#661424]" : "bg-[var(--sidebar-color)]"
+        }`}>
         <div className="flex flex-col items-center space-y-3">
-        <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
-        <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+        {chapelTime ? (
+  <div className="flex flex-col items-center">
+    <img src="/assets/ChapelLogo.png" alt="Chapel Logo" className="w-24" />
+    <h1 className="text-3xl font-extrabold text-white-800"> Chapel Time! </h1>
+  </div>
+) : (
+  <>
+    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
+    <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+  </>
+)}
+
            <div className="flex flex-row rounded-lg w-full"> 
                 
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 </div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
+
+
             </div>
             <div className="flex flex-col h-full mt-4 space-y-2">
                 {rooms.map(room => {
@@ -290,7 +327,7 @@ function CreateRoom(){
                     title="Report a bug"
                     className="hover:text-red-400 transition-colors duration-200"
                 >
-                    <FontAwesomeIcon icon={faBug} className="h-5 w-5" />
+                    <FontAwesomeIcon icon={faBug} className="h-5 w-5 mr-5" />
                 </a>
                 <a
                     href="/suggest-feature"
@@ -306,10 +343,23 @@ function CreateRoom(){
             
         </div>
 
-        {!onroom && <div className="absolute top-0 h-screen w-full bg-[var(--sidebar-color)] text-white p-6 md:hidden flex-col justify-between flex">
+        {!onroom && 
+        <div className={`absolute top-0 h-screen w-full text-white p-6 md:hidden flex-col justify-between flex ${
+        chapelTime ? "bg-[#661424]" : "bg-[var(--sidebar-color)]"
+         }`}>
         <div className="flex flex-col items-center space-y-3">
-        <img src="/assets/BetterLogoTiny.png" alt="" className="mx-auto w-32" />
-        <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+        {chapelTime ? (
+  <div className="flex flex-col items-center">
+    <img src="/assets/ChapelLogo.png" alt="Chapel Logo" className="w-24" />
+    <h1 className="text-3xl font-extrabold text-white-800"> Chapel Time! </h1>
+  </div>
+) : (
+  <>
+    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
+    <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+  </>
+)}
+
             
                 <div className="flex flex-row rounded-lg w-full"> 
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button></div>
@@ -342,7 +392,7 @@ function CreateRoom(){
                     title="Report a bug"
                     className="hover:text-red-400 transition-colors duration-200"
                 >
-                    <FontAwesomeIcon icon={faBug} className="h-5 w-5" />
+                    <FontAwesomeIcon icon={faBug} className="h-5 w-5 mr-5" />
                 </a>
                 <a
                     href="/suggest-feature"
