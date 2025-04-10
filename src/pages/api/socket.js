@@ -1,6 +1,6 @@
 import { mainConfig } from "config/config";
 import { Server } from "socket.io";
-import { initDb } from '../../libraries/statsDb.js'; // adjust the path if needed
+import { initDb } from '../../libraries/statsDb'; 
 
 
 export default (async (req, res) => {
@@ -74,6 +74,19 @@ export default (async (req, res) => {
         socket.emit("user", null);
       }
     })
+
+    socket.on("fetchLeaderboard", async () => {
+      try {
+        const messages = await db.all("SELECT * FROM message_counts ORDER BY count DESC LIMIT 10");
+        const rooms = await db.all("SELECT * FROM room_joins ORDER BY count DESC LIMIT 10");
+        console.log("Emitting leaderboard: messages:", messages, "rooms:", rooms);
+        socket.emit("leaderboard", { messages, rooms });
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+        socket.emit("leaderboard", { messages: [], rooms: [] });
+      }
+    });
+    
 
     socket.on("fetchRooms", () => {
       setInterval(async () => {
@@ -156,8 +169,9 @@ export default (async (req, res) => {
           message: `${socket.data.user.username} left the room`
         });
       });
-
+      
       socket.join(id);
+     
 
       updateMembers(id);
       socket.emit("joinRoom", { success: true, data: room });
@@ -186,8 +200,11 @@ export default (async (req, res) => {
           message: `${socket.data.user.username} left the room`
         });
       });
-
+      
       socket.join(id);
+
+     
+
 
       updateMembers(id);
       socket.emit("joinRoomStranger", { success: true, data: room });
