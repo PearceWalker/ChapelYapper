@@ -296,6 +296,7 @@ function CreateRoom(){
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 </div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
+                 <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
 
 
             </div>
@@ -350,7 +351,7 @@ function CreateRoom(){
         <div className="flex flex-col items-center space-y-3">
         {chapelTime ? (
   <div className="flex flex-col items-center">
-    <img src="/assets/ChapelLogo.png" alt="Chapel Logo" className="w-24" />
+    <img src="/assets/ChapelLogo.png" alt="Chapel Logo" className="w-32" />
     <h1 className="text-3xl font-extrabold text-white-800"> Chapel Time! </h1>
   </div>
 ) : (
@@ -362,8 +363,9 @@ function CreateRoom(){
 
             
                 <div className="flex flex-row rounded-lg w-full"> 
-                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button></div>
+                <button  className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button></div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-gray-300 bg-zinc-500/30 hover:bg-zinc-500/20 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
+
             </div>
             <div className="flex flex-col h-full mt-4 space-y-2">
                 {rooms.map(room => {

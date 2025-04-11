@@ -75,6 +75,45 @@ export default (async (req, res) => {
       }
     })
 
+        // --- PULSE FEATURE ---
+
+        socket.on("fetchPosts", async () => {
+          try {
+            const posts = await db.all("SELECT * FROM pulse_posts ORDER BY timestamp DESC LIMIT 50");
+            socket.emit("posts", posts);
+          } catch (err) {
+            console.error("Error fetching Pulse posts:", err);
+            socket.emit("posts", []);
+          }
+        });
+    
+        socket.on("newPost", async (post) => {
+          try {
+            await db.run(
+              "INSERT INTO pulse_posts (id, message, timestamp, votes) VALUES (?, ?, ?, ?)",
+              post.id,
+              post.message,
+              post.timestamp,
+              post.votes
+            );
+            io.emit("newPost", post);
+          } catch (err) {
+            console.error("Error inserting Pulse post:", err);
+          }
+        });
+    
+        socket.on("votePost", async ({ id, type }) => {
+          try {
+            const change = type === "up" ? 1 : -1;
+            await db.run("UPDATE pulse_posts SET votes = votes + ? WHERE id = ?", change, id);
+            const updated = await db.get("SELECT id, votes FROM pulse_posts WHERE id = ?", id);
+            io.emit("voteUpdate", updated);
+          } catch (err) {
+            console.error("Error updating vote:", err);
+          }
+        });
+    
+
     socket.on("fetchLeaderboard", async () => {
       try {
         const messages = await db.all("SELECT * FROM message_counts ORDER BY count DESC LIMIT 10");
@@ -116,6 +155,8 @@ export default (async (req, res) => {
         socket.emit("UsersOnline", { success: true, users: usersonline });
       }, 1000);
     });
+
+    
 
     socket.on("UsersOnline", async () => {
       socket.emit("UsersOnline", { success: true });

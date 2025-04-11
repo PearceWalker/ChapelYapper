@@ -25,5 +25,14 @@ export async function initDb() {
     )
   `);
 
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS pulse_posts (
+      id TEXT PRIMARY KEY,
+      message TEXT NOT NULL,
+      timestamp INTEGER NOT NULL,
+      votes INTEGER DEFAULT 0
+    )
+  `);
+
   return db;
 }
