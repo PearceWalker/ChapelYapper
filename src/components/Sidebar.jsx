@@ -387,7 +387,7 @@ function CreateRoom(){
                 })}
             </div>
 
-            <div className="flex flex-row items-center space-y-3 mt-6 w-full mb-10">
+            <div className="flex flex-row items-center space-y-3 mt-6 w-full mb-20">
                 <div className="flex flex-row items-center space-x-2 w-full hover:bg-zinc-500/5 p-4 rounded-lg transition-all duration-200">
                     {!user?.verified ? <span className="font-semibold">{user?.username}</span> : <span className="font-semibold flex -flex-row items-center">{user?.username} <FontAwesomeIcon className=" h-3 mx-2" icon={faCheckCircle} /></span> }
                 </div>
