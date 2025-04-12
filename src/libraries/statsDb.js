@@ -34,5 +34,17 @@ export async function initDb() {
     )
   `);
 
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS pulse_comments (
+      id TEXT PRIMARY KEY,
+      post_id TEXT,
+      parent_id TEXT, -- null if root comment
+      message TEXT,
+      timestamp INTEGER,
+      votes INTEGER DEFAULT 0
+    )
+  `);
+
+
   return db;
 }

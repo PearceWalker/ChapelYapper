@@ -255,6 +255,27 @@ export default (async (req, res) => {
       });
     });
 
+    // Fetch comments for a post
+socket.on("fetchComments", async ({ postId }) => {
+  const comments = await db.all("SELECT * FROM pulse_comments WHERE post_id = ? ORDER BY timestamp ASC", postId);
+  socket.emit("comments", { postId, comments });
+});
+
+// Add new comment
+socket.on("newComment", async (comment) => {
+  await db.run(
+    `INSERT INTO pulse_comments (id, post_id, parent_id, message, timestamp)
+     VALUES (?, ?, ?, ?, ?)`,
+    comment.id,
+    comment.post_id,
+    comment.parent_id,
+    comment.message,
+    comment.timestamp
+  );
+  io.emit("newComment", comment);
+});
+
+
     socket.on("leaveRoom", async () => {
       const room = Array.from(socket.rooms).find(room => room !== socket.id);
       if (!room) return socket.emit("leaveRoom", { success: false, error: "You are not in a room" });
