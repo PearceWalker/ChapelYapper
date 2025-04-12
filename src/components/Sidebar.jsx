@@ -293,7 +293,7 @@ function CreateRoom(){
 
            <div className="flex flex-row rounded-lg w-full"> 
                 
-                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
+                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 </div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
                  <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
@@ -356,14 +356,14 @@ function CreateRoom(){
   </div>
 ) : (
   <>
-    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
-    <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-40" />
+    <h1 className="mx-auto text-5xl font-bold">ChapYapper</h1>
   </>
 )}
 
             
                 <div className="flex flex-row rounded-lg w-full"> 
-                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Club Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
+                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 </div>
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
                  <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
@@ -387,25 +387,36 @@ function CreateRoom(){
                 })}
             </div>
 
-            <div className="flex flex-row items-center space-y-3 mt-6 w-full">
-                <div className="flex flex-row items-center space-x-2 w-full hover:bg-zinc-500/5 p-4 rounded-lg transition-all duration-200">
-                    {!user?.verified ? <span className="font-semibold">{user?.username}</span> : <span className="font-semibold flex -flex-row items-center">{user?.username} <FontAwesomeIcon className=" h-3 mx-2" icon={faCheckCircle} /></span> }
-                </div>
-                <a
-                    href="/bug-report"
-                    title="Report a bug"
-                    className="hover:text-red-400 transition-colors duration-200"
-                >
-                    <FontAwesomeIcon icon={faBug} className="h-5 w-5 mr-5" />
-                </a>
-                <a
-                    href="/suggest-feature"
-                    title="Suggest a feature"
-                    className="hover:text-yellow-300 transition-colors duration-200"
-                >
-                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
-                </a>
-            </div>
+            <div className="absolute bottom-4 left-0 w-full px-6 z-50">
+  <div className="flex flex-row items-center justify-between bg-[var(--sidebar-color)] p-4 rounded-lg shadow-md">
+    <div className="flex items-center space-x-2">
+      {!user?.verified ? (
+        <span className="font-semibold">{user?.username}</span>
+      ) : (
+        <span className="font-semibold flex flex-row items-center">
+          {user?.username} <FontAwesomeIcon className="h-3 mx-2" icon={faCheckCircle} />
+        </span>
+      )}
+    </div>
+    <div className="flex items-center space-x-4">
+      <a
+        href="/bug-report"
+        title="Report a bug"
+        className="hover:text-red-400 transition-colors duration-200"
+      >
+        <FontAwesomeIcon icon={faBug} className="h-5 w-5" />
+      </a>
+      <a
+        href="/suggest-feature"
+        title="Suggest a feature"
+        className="hover:text-yellow-300 transition-colors duration-200"
+      >
+        <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
+      </a>
+    </div>
+  </div>
+</div>
+
         </div>}
         </motion.div>}
     </>

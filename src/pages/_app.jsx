@@ -37,6 +37,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <link rel="icon" href="assets/BetterLogoTiny.png" />
           <title>{mainConfig.nameApp}</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+          <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+
         </Head>
 
         <AuthWrapper>
