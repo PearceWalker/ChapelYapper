@@ -207,21 +207,24 @@ export default function Pulse() {
         ))}
       </div>
 
-      <form onSubmit={handlePost} className="pt-2 border-t border-zinc-700">
-        <input
-          type="text"
-          className="w-full p-3 rounded-md bg-zinc-800 border border-zinc-600 text-white"
-          placeholder="What's happening?"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="mt-2 w-full bg-blue-600 hover:bg-blue-700 p-2 rounded-md"
-        >
-          Post
-        </button>
-      </form>
+      <div className="mb-20 md:mb-0">
+  <form onSubmit={handlePost} className="pt-2 border-t border-zinc-700">
+    <input
+      type="text"
+      className="w-full p-3 rounded-md bg-zinc-800 border border-zinc-600 text-white"
+      placeholder="What's happening?"
+      value={message}
+      onChange={(e) => setMessage(e.target.value)}
+    />
+    <button
+      type="submit"
+      className="mt-2 w-full bg-blue-600 hover:bg-blue-700 p-2 rounded-md"
+    >
+      Post
+    </button>
+  </form>
+</div>
+
 
       {commentModalOpen && selectedPost && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
