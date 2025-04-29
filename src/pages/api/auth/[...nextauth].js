@@ -10,7 +10,7 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      const isAllowed = user.email.endsWith("@students.fhu.edu");
+      const isAllowed = user.email.endsWith("@students.fhu.edu") || user.email === "pearcewalker11@gmail.com"    ;
 
       if (!isAllowed) {
      

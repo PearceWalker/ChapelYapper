@@ -1,26 +1,25 @@
 import { mainConfig } from "config/config";
 import { Server } from "socket.io";
 import { initDb } from '../../libraries/statsDb'; 
+import { uploadImage } from '../../pages/upload'; // adjust path as needed
 
 
-export default (async (req, res) => {
+export default async function handler(req, res) {
   if (res.socket.server.io) {
     res.end();
     return;
   }
 
-  let db;
-
-  (async () => {
-  db = await initDb();
-  })();
-
+  // ✅ Wait for DB to initialize properly
+  const db = await initDb();
 
   const io = new Server(res.socket.server, {
     pingInterval: 10000,
-    pingTimeout: 5000
+    pingTimeout: 5000,
   });
+
   res.socket.server.io = io;
+
 
   io.use((socket, next) => {
     setInterval(() => {
@@ -79,29 +78,64 @@ export default (async (req, res) => {
 
         socket.on("fetchPosts", async () => {
           try {
-            const posts = await db.all("SELECT * FROM pulse_posts ORDER BY timestamp DESC LIMIT 50");
+            const posts = await db.all(`
+              SELECT
+                id,
+                message,
+                timestamp,
+                votes,
+                image_url,
+                replied_to,
+                email
+              FROM pulse_posts
+              ORDER BY timestamp DESC
+              LIMIT 50
+            `);
             socket.emit("posts", posts);
           } catch (err) {
             console.error("Error fetching Pulse posts:", err);
             socket.emit("posts", []);
           }
         });
-    
+        
         socket.on("newPost", async (post) => {
           try {
+            let imageUrl = null;
+        
+            if (
+              post.file &&
+              (post.type === "image/png" ||
+               post.type === "image/jpeg" ||
+               post.type === "image/jpg")
+            ) {
+              imageUrl = await uploadImage(post.file);
+            }
+        
             await db.run(
-              "INSERT INTO pulse_posts (id, message, timestamp, votes) VALUES (?, ?, ?, ?)",
+              `INSERT INTO pulse_posts
+                 (id, message, timestamp, votes, image_url, replied_to, email)
+               VALUES (?, ?, ?, ?, ?, ?, ?)`,
               post.id,
               post.message,
               post.timestamp,
-              post.votes
+              post.votes,
+              imageUrl,
+              post.replied_to || null,
+              post.email
             );
-            io.emit("newPost", post);
+        
+            io.emit("newPost", {
+              ...post,
+              image_url: imageUrl,
+              email: post.email,
+            });
           } catch (err) {
             console.error("Error inserting Pulse post:", err);
           }
         });
-    
+        
+        
+        
         socket.on("votePost", async ({ id, type }) => {
           try {
             const change = type === "up" ? 1 : -1;
@@ -112,6 +146,22 @@ export default (async (req, res) => {
             console.error("Error updating vote:", err);
           }
         });
+
+        socket.on("reportPost", async (report) => {
+          try {
+            await db.run(
+              "INSERT INTO pulse_reports (id, post_id, reporter_email, reason, timestamp) VALUES (?, ?, ?, ?, ?)",
+              report.id,
+              report.post_id,
+              report.reporter_email,
+              report.reason,
+              report.timestamp
+            );
+          } catch (err) {
+            console.error("Error reporting post:", err);
+          }
+        });
+        
     
 
     socket.on("fetchLeaderboard", async () => {
@@ -155,6 +205,25 @@ export default (async (req, res) => {
         socket.emit("UsersOnline", { success: true, users: usersonline });
       }, 1000);
     });
+
+    socket.on("fetchReports", async () => {
+      const reports = await db.all(`
+        SELECT r.id, r.post_id, r.reason, r.timestamp, r.reporter_email, p.message, p.image_url
+        FROM pulse_reports r
+        JOIN pulse_posts p ON r.post_id = p.id
+      `);
+      socket.emit("reports", reports);
+    });
+    
+    socket.on("declineReport", async ({ reportId }) => {
+      await db.run("DELETE FROM pulse_reports WHERE id = ?", reportId);
+    });
+    
+    socket.on("removePost", async ({ reportId, postId }) => {
+      await db.run("DELETE FROM pulse_reports WHERE id = ?", reportId);
+      await db.run("DELETE FROM pulse_posts WHERE id = ?", postId);
+    });
+    
 
     
 
@@ -256,24 +325,85 @@ export default (async (req, res) => {
     });
 
     // Fetch comments for a post
-socket.on("fetchComments", async ({ postId }) => {
-  const comments = await db.all("SELECT * FROM pulse_comments WHERE post_id = ? ORDER BY timestamp ASC", postId);
-  socket.emit("comments", { postId, comments });
-});
+    socket.on("fetchComments", async ({ postId }) => {
+      const rows = await db.all(
+        `SELECT
+           c.*,
+           pc.commenter_index
+         FROM pulse_comments c
+         LEFT JOIN pulse_commenters pc
+           ON pc.post_id = c.post_id
+          AND pc.commenter_email = c.email
+         WHERE c.post_id = ?
+         ORDER BY c.timestamp ASC`,
+        postId
+      );
+      socket.emit("comments", { postId, comments: rows });
+    });
+    
 
 // Add new comment
 socket.on("newComment", async (comment) => {
+  // grab the post’s author email
+  const post = await db.get(
+    "SELECT email FROM pulse_posts WHERE id = ?",
+    comment.post_id
+  );
+
+  // if it’s not the OP, ensure we have an index for them
+  if (comment.email !== post.email) {
+    const existing = await db.get(
+      `SELECT commenter_index
+         FROM pulse_commenters
+        WHERE post_id = ?
+          AND commenter_email = ?`,
+      comment.post_id,
+      comment.email
+    );
+
+    if (!existing) {
+      // find the current max index, default to 0
+      const { commenter_index: max = 0 } = (await db.get(
+        `SELECT MAX(commenter_index) AS commenter_index
+           FROM pulse_commenters
+          WHERE post_id = ?`,
+        comment.post_id
+      )) || {};
+
+      const next = max + 1;
+      await db.run(
+        `INSERT INTO pulse_commenters (post_id, commenter_email, commenter_index)
+         VALUES (?, ?, ?)`,
+        comment.post_id,
+        comment.email,
+        next
+      );
+      comment.commenter_index = next;
+    } else {
+      comment.commenter_index = existing.commenter_index;
+    }
+  } else {
+    // OP gets no number
+    comment.commenter_index = null;
+  }
+
+  // now insert into pulse_comments (including email!)
   await db.run(
-    `INSERT INTO pulse_comments (id, post_id, parent_id, message, timestamp)
-     VALUES (?, ?, ?, ?, ?)`,
+    `INSERT INTO pulse_comments
+       (id, post_id, parent_id, message, timestamp, email)
+     VALUES (?, ?, ?, ?, ?, ?)`,
     comment.id,
     comment.post_id,
     comment.parent_id,
     comment.message,
-    comment.timestamp
+    comment.timestamp,
+    comment.email
   );
+
+  // emit the enriched comment
   io.emit("newComment", comment);
 });
+
 
 
     socket.on("leaveRoom", async () => {
@@ -407,4 +537,4 @@ socket.on("newComment", async (comment) => {
 
   res.end();
 
-});
+};

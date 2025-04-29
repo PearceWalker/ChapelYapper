@@ -27,23 +27,50 @@ export async function initDb() {
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS pulse_posts (
-      id TEXT PRIMARY KEY,
-      message TEXT NOT NULL,
-      timestamp INTEGER NOT NULL,
-      votes INTEGER DEFAULT 0
-    )
+      id          TEXT PRIMARY KEY,
+      message     TEXT,
+      timestamp   INTEGER,
+      votes       INTEGER DEFAULT 0,
+      image_url   TEXT,
+      replied_to  TEXT,
+      email       TEXT
+    );
   `);
+  
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS pulse_comments (
-      id TEXT PRIMARY KEY,
-      post_id TEXT,
-      parent_id TEXT, -- null if root comment
-      message TEXT,
-      timestamp INTEGER,
-      votes INTEGER DEFAULT 0
-    )
+      id          TEXT PRIMARY KEY,
+      post_id     TEXT,
+      parent_id   TEXT,
+      message     TEXT,
+      timestamp   INTEGER,
+      votes       INTEGER DEFAULT 0,
+      email       TEXT
+    );
   `);
+
+  await db.exec(`
+   CREATE TABLE IF NOT EXISTS pulse_reports (
+  id TEXT PRIMARY KEY,
+  post_id TEXT,
+  reporter_email TEXT,
+  reason TEXT,
+  timestamp INTEGER
+    )
+
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS pulse_commenters (
+      post_id TEXT NOT NULL,
+      commenter_email TEXT NOT NULL,
+      commenter_index INTEGER NOT NULL,
+      PRIMARY KEY (post_id, commenter_email)
+    );
+  `);
+  
+  
 
 
   return db;
