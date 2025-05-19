@@ -12,8 +12,9 @@ export default function AdminPage() {
   useEffect(() => {
     if (status === "loading") return;
 
-    if (!session || session.user.email !== "pearcewalker11@gmail.com" || session.user.email !== "pearce.walker@students.fhu.edu") {
+    if (!session || session.user.email !== "pearcewalker11@gmail.com" ){
       router.push("/rooms");
+      console.log(session.user.email)
     } else {
       import("socket.io-client").then(({ io }) => {
         const sock = io();
