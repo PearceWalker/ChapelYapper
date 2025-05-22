@@ -3,10 +3,10 @@ import { useConnection } from "context/connect";
 
 export default function Leaderboard() {
   const { connection } = useConnection();
-  const [leaderboard, setLeaderboard] = useState({ messages: [], rooms: [] });
+  const [leaderboard, setLeaderboard] = useState({ messages: [], rooms: [], posts: [] });
 
   useEffect(() => {
-    if (connection) {
+    if (connection) { 
       // Request leaderboard data
       connection.emit("fetchLeaderboard");
       
@@ -32,6 +32,21 @@ export default function Leaderboard() {
             leaderboard.messages.map((entry, i) => (
               <li key={i}>
                 {i + 1}. {entry.username} – {entry.count} messages
+              </li>
+            ))
+          ) : (
+            <li>No data</li>
+          )}
+        </ul>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl mb-2">Top Pulsers</h2>
+        <ul className="space-y-1">
+          {leaderboard.posts.length ? (
+            leaderboard.posts.map((entry, i) => (
+              <li key={i}>
+                {i + 1}. {entry.email} – {entry.count} posts
               </li>
             ))
           ) : (
