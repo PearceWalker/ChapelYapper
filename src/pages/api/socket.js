@@ -1,7 +1,7 @@
 import { mainConfig } from "config/config";
 import { Server } from "socket.io";
 import { initDb } from '../../libraries/statsDb'; 
-import { uploadImage } from '../../pages/upload'; // adjust path as needed
+import { uploadImage } from './upload'; // adjust path as needed
 
 
 export default async function handler(req, res) {
