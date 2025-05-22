@@ -8,6 +8,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [reports, setReports] = useState([]);
   const [connection, setConnection] = useState(null);
+  
 
   useEffect(() => {
     if (status === "loading") return;
@@ -63,5 +64,6 @@ export default function AdminPage() {
         </div>
       )}
     </div>
+    
   );
 }

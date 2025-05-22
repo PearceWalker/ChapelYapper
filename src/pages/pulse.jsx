@@ -85,6 +85,7 @@ export default function Pulse() {
       const base64 = await toBase64(imageFile);
       fileData = { file: base64, type: imageFile.type };
     }
+    
 
     connection.emit("newPost", {
       id: uuidv4(),

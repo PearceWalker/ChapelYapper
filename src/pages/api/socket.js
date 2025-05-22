@@ -123,6 +123,14 @@ export default async function handler(req, res) {
               post.replied_to || null,
               post.email
             );
+
+            
+            await db.run(`
+            INSERT INTO post_counter (email, count)
+            VALUES (?, 1)
+            ON CONFLICT(email) DO UPDATE SET count = count + 1
+            `, [post.email]);
+          
         
             io.emit("newPost", {
               ...post,
@@ -132,6 +140,8 @@ export default async function handler(req, res) {
           } catch (err) {
             console.error("Error inserting Pulse post:", err);
           }
+
+          
         });
         
         
@@ -168,11 +178,12 @@ export default async function handler(req, res) {
       try {
         const messages = await db.all("SELECT * FROM message_counts ORDER BY count DESC LIMIT 10");
         const rooms = await db.all("SELECT * FROM room_joins ORDER BY count DESC LIMIT 10");
+        const posts = await db.all("SELECT * FROM post_counter ORDER BY count DESC LIMIT 10");
         console.log("Emitting leaderboard: messages:", messages, "rooms:", rooms);
-        socket.emit("leaderboard", { messages, rooms });
+        socket.emit("leaderboard", { messages, rooms, posts });
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
-        socket.emit("leaderboard", { messages: [], rooms: [] });
+        socket.emit("leaderboard", { messages: [], rooms: [] , posts: []});
       }
     });
     

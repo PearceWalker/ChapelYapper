@@ -187,10 +187,9 @@ export default function Room() {
         if (members.length < 2){
             setMessages([{
                 "user": {
-                    "username": "Bot",
                     "verified": true,
                 },
-                "message": "Waiting stranger...",
+                "message": "Waiting on stranger...",
                 "date": new Date(),
                 "self": false
             }])
@@ -330,8 +329,8 @@ export default function Room() {
                     <div className="flex items-center">
                         
                         <div className="ml-3">
-                            <p className="text-lg font-medium flex items-center">{members.filter(a=>a).length == 1 ? <p>Waiting on stranger...</p> : <p>Anonymous Chat</p>}</p>
-                            <p className="text-xs font-medium italic text-gray-500">{members.filter(a=>a).length == 1 ? <p>Searching for stranger to talk...</p> : <p>This room is with a stranger. </p>}</p>
+                            <p className="text-lg font-medium flex items-center">{members.filter(a=>a).length == 1 ? <p>ChapYapper Anonymous</p> : <p>Anonymous Chat</p>}</p>
+                            <p className="text-xs font-medium italic text-gray-500">{members.filter(a=>a).length == 1 ? <p></p> : <p>This room is with a stranger. </p>}</p>
                         </div>
                     </div>
                     <div className="flex flex-row items-center">
@@ -435,7 +434,7 @@ export default function Room() {
                       </motion.li> 
 
                         <div className="flex items-center">
-                            <input onChange={() => typpingu()} name="message" disabled={members.filter(a=>a).length == 1} type="text" className={members.filter(a=>a).length == 1 ? `bg-zinc-500/10 rounded-md w-full px-4 py-2 cursor-not-allowed text-white outline-none` : `bg-zinc-500/10 rounded-md w-full px-4 py-2 text-white outline-none`} autoComplete="off" placeholder={members.filter(a=>a).length == 1 ? "Waiting stranger..." : `Type a message...`} />
+                            <input onChange={() => typpingu()} name="message" disabled={members.filter(a=>a).length == 1} type="text" className={members.filter(a=>a).length == 1 ? `bg-zinc-500/10 rounded-md w-full px-4 py-2 cursor-not-allowed text-white outline-none` : `bg-zinc-500/10 rounded-md w-full px-4 py-2 text-white outline-none`} autoComplete="off" placeholder={members.filter(a=>a).length == 1 ? "Waiting on stranger..." : `Type a message...`} />
                             <button type="button" className="relative bg-zinc-500/10 hover:bg-zinc-500/20 rounded-md p-2 ml-2 transition-all duration-200">
                                 <div className="flex flex-col justify-center items-center">
                                 <FontAwesomeIcon className=" h-6 w-6 text-white rotate-90 mx-1" icon={faLink} />

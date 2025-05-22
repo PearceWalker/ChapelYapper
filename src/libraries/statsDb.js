@@ -26,6 +26,15 @@ export async function initDb() {
   `);
 
   await db.exec(`
+    CREATE TABLE IF NOT EXISTS post_counter (
+      email TEXT PRIMARY KEY,
+      count INTEGER DEFAULT 0
+    )
+  `);
+
+
+
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS pulse_posts (
       id          TEXT PRIMARY KEY,
       message     TEXT,
