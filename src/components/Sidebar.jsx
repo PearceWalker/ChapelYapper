@@ -291,10 +291,10 @@ function CreateRoom(){
   </>
 )}
 
-           <div className="flex flex-row rounded-lg w-full"> 
+            
                 
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
-                </div>
+            
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
                  <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
 
@@ -362,9 +362,8 @@ function CreateRoom(){
 )}
 
             
-                <div className="flex flex-row rounded-lg w-full"> 
                 <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
-                </div>
+                
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
                  <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
 

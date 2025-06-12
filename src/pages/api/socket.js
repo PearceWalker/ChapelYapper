@@ -243,21 +243,23 @@ export default async function handler(req, res) {
     });
 
     socket.on("createRoom", data => {
-      const { name, password, maxUsers } = data;
-      if (!name) return socket.emit("createRoom", { success: false, error: "Name is required" });
-      if (io.sockets.adapter.rooms[name]) return socket.emit("createRoom", { success: false, error: "Room already exists" });
-      let room = {
-        id: Math.random().toString(36).substring(2, 9),
-        name: name.replace(/[^a-zA-Z0-9 ]/g, ""),
-        owner: socket.data.user,
-        users: 1,
-        maxUsers: maxUsers,
-      };
+  const { name, anonymousToggle, password, maxUsers } = data;
 
-      if (password) room.password = password;
+  if (!name) return socket.emit("createRoom", { success: false, error: "Name is required" });
+  if (io.sockets.adapter.rooms[name]) return socket.emit("createRoom", { success: false, error: "Room already exists" });
 
+  let room = {
+    id: Math.random().toString(36).substring(2, 9),
+    name: name.replace(/[^a-zA-Z0-9 ]/g, ""),
+    owner: socket.data.user,
+    users: 1,
+    anonymous: anonymousToggle, 
+    maxUsers: maxUsers,
+  };
 
-      io.sockets.adapter.rooms[room.id] = room;
+  if (password) room.password = password;
+
+  io.sockets.adapter.rooms[room.id] = room;
 
       socket.rooms.forEach((user_room) => {
         socket.leave(user_room);
@@ -489,11 +491,15 @@ socket.on("newComment", async (comment) => {
 
       if (!room) return;
 
+      const roomInfo = io.sockets.adapter.rooms[room];
+      const isAnon = roomInfo?.anonymous;
+      const userPayload = isAnon ? { username: "Anonymous" } : socket.data.user;
+
       var message = {
-        user: socket.data.user,
-        message: data.message,
-        date: new Date(),
-      }
+      user: userPayload,
+      message: data.message,
+      date: new Date(),
+      };
 
       if (username && db) {
         await db.run(`
@@ -525,11 +531,22 @@ socket.on("newComment", async (comment) => {
     });
 
     socket.on("fetchRoom", async () => {
-      const room = Array.from(socket.rooms).find(room => room !== socket.id);
-      if (!room) return socket.emit("fetchRoom", { success: false, error: "You are not in a room" });
+  const room = Array.from(socket.rooms).find(room => room !== socket.id);
+  if (!room) return socket.emit("fetchRoom", { success: false, error: "You are not in a room" });
 
-      socket.emit("fetchRoom", { success: true, data: io.sockets.adapter.rooms[room] });
-    });
+  const roomData = io.sockets.adapter.rooms[room];
+  socket.emit("fetchRoom", {
+    success: true,
+    data: {
+      id: room,
+      name: roomData?.name,
+      owner: roomData?.owner,
+      anonymous: roomData?.anonymous, 
+      password: roomData?.password,
+      maxUsers: roomData?.maxUsers
+    }
+  });
+});
 
 
 

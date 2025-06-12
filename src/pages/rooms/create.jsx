@@ -6,6 +6,8 @@ export default function Home() {
     const { connection } = useConnection();
     const router = useRouter();
     let [error, setError] = useState(null);
+    const [isAnonymous, setIsAnonymous] = useState(true);
+
 
 
 /*     max users permitted variable */
@@ -22,9 +24,11 @@ export default function Home() {
 
         const name = event.target.name.value;
         const password = event.target.password.value;
+        const anonymousToggle = isAnonymous;
         const maxUsers = maxus || maxusers;
 
-        connection.emit('createRoom', { name, password, maxUsers });
+
+        connection.emit('createRoom', { name, anonymousToggle, password, maxUsers });
         connection.on('createRoom', data => {
             const result = data;
             if (result.success) {
@@ -75,6 +79,22 @@ export default function Home() {
                             <label htmlFor="name" className="text-sm md:text-[12.5px] leading-tighter text-gray-300 uppercase font-medium cursor-text">Room Name</label>
                             <input id="name" autoComplete='off' className="text-white bg-dark-3 transition-all duration-200 w-full rounded-lg p-3 border border-gray-300/10 focus:border-gray-700 outline-none ring-none" type="text" />
                         </div>
+                        <div className="relative mb-2 flex items-center justify-between">
+  <label htmlFor="anonymousToggle" className="text-sm md:text-[12.5px] leading-tighter text-gray-300 uppercase font-medium">
+    Anonymous?
+  </label>
+  <select
+    id="anonymousToggle"
+    className="bg-zinc-800 border border-zinc-600 text-white rounded-md px-3 py-1 text-sm focus:outline-none"
+    value={isAnonymous ? "yes" : "no"}
+    onChange={(e) => setIsAnonymous(e.target.value === "yes")}
+  >
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
+
+
                         <div className="relative mb-2">
                             <label htmlFor="name" className="text-sm md:text-[12.5px] leading-tighter text-gray-300 uppercase font-medium cursor-text">Password <span className="text-xs italic lowercase font-thin opacity-50">optional</span></label>
                             <input id="password" autoComplete='off' className="text-white bg-dark-3 transition-all duration-200 w-full rounded-lg p-3 border border-gray-300/10 focus:border-gray-700 outline-none ring-none" type="text" />
@@ -83,6 +103,7 @@ export default function Home() {
                             <label htmlFor="name" className="text-sm md:text-[12.5px] leading-tighter text-gray-300 uppercase font-medium cursor-text">Maximum users <span className="text-xs italic lowercase font-thin opacity-50">optional</span></label>
                             <input id="maxUsers" autoComplete='off' placeholder={maxusers} type="number" min="2" max="30" className="text-white bg-dark-3 transition-all duration-200 w-full rounded-lg p-3 border border-gray-300/10 focus:border-gray-700 outline-none ring-none" />
                         </div>
+                        
                         <div className="space-y-9">
                             <div className="text-sm flex justify-end items-center h-full mt-16">
                                 <button className="py-2.5 px-12 rounded text-white btn bg-gradient-to-r from-gray-600 to-gray-800 hover:opacity-80 transition-all duration-200">Create</button>
