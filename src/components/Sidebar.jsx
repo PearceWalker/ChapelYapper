@@ -2,10 +2,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useConnection } from "context/connect";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
-import { faCheckCircle, faComment, faLock, faPlus, faHeartbeat, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faComment, faLock, faPlus, faHeartbeat, faRandom, faRightToBracket, faShuffle, faUser, faUserSecret, faBug, faLightbulb, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion, AnimatePresence } from "framer-motion"
 import { mainConfig } from "config/config";
+import { signOut } from "next-auth/react";
 
 
 export default function Sidebar() {
@@ -335,8 +336,15 @@ function CreateRoom(){
                     title="Suggest a feature"
                     className="hover:text-yellow-300 transition-colors duration-200"
                 >
-                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
+                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5 mr-5" />
                 </a>
+                <button
+                onClick={() => signOut()}
+                title="Log out"
+                className="text-white hover:text-red-500 transition-colors duration-200"
+                >
+    <FontAwesomeIcon icon={faSignOut} className="h-5 w-5" />
+  </button>
 
 </div>
 
@@ -397,13 +405,23 @@ function CreateRoom(){
                 >
                     <FontAwesomeIcon icon={faBug} className="h-5 w-5 mr-5" />
                 </a>
+                
                 <a
                     href="/suggest-feature"
                     title="Suggest a feature"
                     className="hover:text-yellow-300 transition-colors duration-200"
                 >
-                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5" />
+                    <FontAwesomeIcon icon={faLightbulb} className="h-5 w-5 mr-5" />
                 </a>
+
+                <button
+    onClick={() => signOut()}
+    title="Log out"
+    className="text-white hover:text-red-500 transition-colors duration-200"
+  >
+    <FontAwesomeIcon icon={faSignOut} className="h-5 w-5" />
+  </button>
+                 
             </div>
         </div>}
         </motion.div>}
