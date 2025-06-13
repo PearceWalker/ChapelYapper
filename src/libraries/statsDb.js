@@ -7,28 +7,19 @@ const isProd = process.env.NODE_ENV === 'production';
 export async function getDbConnection() {
   if (isProd) {
     const { Pool } = pg;
-
-    console.log("🔍 NODE_ENV:", process.env.NODE_ENV);
-    console.log("🔍 Connecting to PostgreSQL:", process.env.DATABASE_URL);
-
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: true, // More compatible than { rejectUnauthorized: false }
+      ssl: {
+        rejectUnauthorized: false,
+      },
     });
-
-    try {
-      await pool.query("SELECT 1");
-      console.log("✅ PostgreSQL connection successful");
-    } catch (err) {
-      console.error("❌ PostgreSQL connection failed:", err);
-      throw err;
-    }
 
     return {
       exec: (sql) => pool.query(sql),
       run: (sql, params) => pool.query(sql, params),
-      all: (sql, params) => pool.query(sql, params).then(res => res.rows),
-      get: (sql, params) => pool.query(sql, params).then(res => res.rows[0]),
+      all: (sql, params) => pool.query(sql, params).then((res) => res.rows),
+      get: (sql, params) => pool.query(sql, params).then((res) => res.rows[0]),
+      // Add raw pool access if needed
       pool,
     };
   } else {
@@ -42,6 +33,7 @@ export async function getDbConnection() {
       run: (sql, params) => db.run(sql, params),
       all: (sql, params) => db.all(sql, params),
       get: (sql, params) => db.get(sql, params),
+      // Add raw db access if needed
       db,
     };
   }
