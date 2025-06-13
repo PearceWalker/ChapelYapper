@@ -2,3 +2,4 @@ node_modules
 .next
 .env
 .env.local
+chap_yapper_stats.db
