@@ -128,7 +128,7 @@ export default async function handler(req, res) {
             await db.run(`
             INSERT INTO post_counter (email, count)
             VALUES ($1, 1)
-            ON CONFLICT(email) DO UPDATE SET count = count + 1
+            ON CONFLICT(email) DO UPDATE SET count = post_counter.count + 1
             `, [post.email]);
           
         
