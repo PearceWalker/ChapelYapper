@@ -2,42 +2,43 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import pg from 'pg';
 
-const isProd = process.env.NODE_ENV === 'production';
+
+// Top of your file
+let cachedDb = null;
+let cachedPool = null;
 
 export async function getDbConnection() {
-  if (isProd) {
-    const { Pool } = pg;
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
+  if (cachedDb) return cachedDb;
 
-    return {
-      exec: (sql) => pool.query(sql),
-      run: (sql, params) => pool.query(sql, params),
-      all: (sql, params) => pool.query(sql, params).then((res) => res.rows),
-      get: (sql, params) => pool.query(sql, params).then((res) => res.rows[0]),
-      // Add raw pool access if needed
-      pool,
+  // const isProd = process.env.NODE_ENV === 'production';
+  const isProd = true;
+
+
+  if (isProd) {
+    if (!cachedPool) {
+      const { Pool } = pg;
+      cachedPool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+      });
+    }
+
+    cachedDb = {
+      exec: (sql) => cachedPool.query(sql),
+      run: (sql, params) => cachedPool.query(sql, params),
+      all: (sql, params) => cachedPool.query(sql, params).then(res => res.rows),
+      get: (sql, params) => cachedPool.query(sql, params).then(res => res.rows[0]),
+      pool: cachedPool,
     };
   } else {
-    const db = await open({
+    cachedDb = await open({
       filename: './chap_yapper_stats.db',
       driver: sqlite3.Database,
     });
-
-    return {
-      exec: (sql) => db.exec(sql),
-      run: (sql, params) => db.run(sql, params),
-      all: (sql, params) => db.all(sql, params),
-      get: (sql, params) => db.get(sql, params),
-      // Add raw db access if needed
-      db,
-    };
   }
+
+  return cachedDb;
 }
+
 
 export async function initDb() {
   const db = await getDbConnection();

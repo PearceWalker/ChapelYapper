@@ -115,13 +115,13 @@ export default async function handler(req, res) {
               `INSERT INTO pulse_posts
                  (id, message, timestamp, votes, image_url, replied_to, email)
                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-              post.id,
+              [post.id,
               post.message,
               post.timestamp,
               post.votes,
               imageUrl,
               post.replied_to || null,
-              post.email
+              post.email]
             );
 
             
@@ -149,7 +149,7 @@ export default async function handler(req, res) {
         socket.on("votePost", async ({ id, type }) => {
           try {
             const change = type === "up" ? 1 : -1;
-            await db.run("UPDATE pulse_posts SET votes = votes + ? WHERE id = ?", change, id);
+            await db.run("UPDATE pulse_posts SET votes = votes + ? WHERE id = ?", [change, id]);
             const updated = await db.get("SELECT id, votes FROM pulse_posts WHERE id = ?", id);
             io.emit("voteUpdate", updated);
           } catch (err) {
@@ -161,11 +161,11 @@ export default async function handler(req, res) {
           try {
             await db.run(
               "INSERT INTO pulse_reports (id, post_id, reporter_email, reason, timestamp) VALUES (?, ?, ?, ?, ?)",
-              report.id,
+              [report.id,
               report.post_id,
               report.reporter_email,
               report.reason,
-              report.timestamp
+              report.timestamp]
             );
           } catch (err) {
             console.error("Error reporting post:", err);
@@ -227,12 +227,12 @@ export default async function handler(req, res) {
     });
     
     socket.on("declineReport", async ({ reportId }) => {
-      await db.run("DELETE FROM pulse_reports WHERE id = ?", reportId);
+      await db.run("DELETE FROM pulse_reports WHERE id = ?", [reportId]);
     });
     
     socket.on("removePost", async ({ reportId, postId }) => {
-      await db.run("DELETE FROM pulse_reports WHERE id = ?", reportId);
-      await db.run("DELETE FROM pulse_posts WHERE id = ?", postId);
+      await db.run("DELETE FROM pulse_reports WHERE id = ?", [reportId]);
+      await db.run("DELETE FROM pulse_posts WHERE id = ?", [postId]);
     });
     
 
@@ -387,9 +387,9 @@ socket.on("newComment", async (comment) => {
       await db.run(
         `INSERT INTO pulse_commenters (post_id, commenter_email, commenter_index)
          VALUES (?, ?, ?)`,
-        comment.post_id,
+        [comment.post_id,
         comment.email,
-        next
+        next]
       );
       comment.commenter_index = next;
     } else {
