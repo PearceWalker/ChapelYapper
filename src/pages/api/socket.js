@@ -114,7 +114,7 @@ export default async function handler(req, res) {
             await db.run(
               `INSERT INTO pulse_posts
                  (id, message, timestamp, votes, image_url, replied_to, email)
-               VALUES (?, ?, ?, ?, ?, ?, ?)`,
+               VALUES ($1, $2, $3, $4, $5, $6, $7)`,
               [post.id,
               post.message,
               post.timestamp,
@@ -127,7 +127,7 @@ export default async function handler(req, res) {
             
             await db.run(`
             INSERT INTO post_counter (email, count)
-            VALUES (?, 1)
+            VALUES ($1, 1)
             ON CONFLICT(email) DO UPDATE SET count = count + 1
             `, [post.email]);
           
@@ -149,8 +149,10 @@ export default async function handler(req, res) {
         socket.on("votePost", async ({ id, type }) => {
           try {
             const change = type === "up" ? 1 : -1;
-            await db.run("UPDATE pulse_posts SET votes = votes + ? WHERE id = ?", [change, id]);
-            const updated = await db.get("SELECT id, votes FROM pulse_posts WHERE id = ?", id);
+            await db.run("UPDATE pulse_posts SET votes = votes + $1 WHERE id = $2", [change, id]);
+
+            await db.get("SELECT id, votes FROM pulse_posts WHERE id = $1", [id]);
+
             io.emit("voteUpdate", updated);
           } catch (err) {
             console.error("Error updating vote:", err);
@@ -160,7 +162,7 @@ export default async function handler(req, res) {
         socket.on("reportPost", async (report) => {
           try {
             await db.run(
-              "INSERT INTO pulse_reports (id, post_id, reporter_email, reason, timestamp) VALUES (?, ?, ?, ?, ?)",
+              "INSERT INTO pulse_reports (id, post_id, reporter_email, reason, timestamp) VALUES ($1, $2, $3, $4, $5)",
               [report.id,
               report.post_id,
               report.reporter_email,
@@ -227,12 +229,14 @@ export default async function handler(req, res) {
     });
     
     socket.on("declineReport", async ({ reportId }) => {
-      await db.run("DELETE FROM pulse_reports WHERE id = ?", [reportId]);
+      await db.run("DELETE FROM pulse_reports WHERE id = $1", [reportId]);
     });
     
     socket.on("removePost", async ({ reportId, postId }) => {
-      await db.run("DELETE FROM pulse_reports WHERE id = ?", [reportId]);
-      await db.run("DELETE FROM pulse_posts WHERE id = ?", [postId]);
+      await db.run("DELETE FROM pulse_reports WHERE id = $1", [reportId]);
+
+      await db.run("DELETE FROM pulse_posts WHERE id = $1", [postId]);
+
     });
     
 
@@ -340,15 +344,7 @@ export default async function handler(req, res) {
     // Fetch comments for a post
     socket.on("fetchComments", async ({ postId }) => {
       const rows = await db.all(
-        `SELECT
-           c.*,
-           pc.commenter_index
-         FROM pulse_comments c
-         LEFT JOIN pulse_commenters pc
-           ON pc.post_id = c.post_id
-          AND pc.commenter_email = c.email
-         WHERE c.post_id = ?
-         ORDER BY c.timestamp ASC`,
+        `SELECT c.*, pc.commenter_index FROM pulse_comments c LEFT JOIN pulse_commenters pc ON pc.post_id = c.post_id AND pc.commenter_email = c.email WHERE c.post_id = $1 ORDER BY c.timestamp ASC`,
         postId
       );
       socket.emit("comments", { postId, comments: rows });
@@ -359,17 +355,15 @@ export default async function handler(req, res) {
 socket.on("newComment", async (comment) => {
   // grab the post’s author email
   const post = await db.get(
-    "SELECT email FROM pulse_posts WHERE id = ?",
+    "SELECT email FROM pulse_posts WHERE id = $1",
     comment.post_id
   );
 
   // if it’s not the OP, ensure we have an index for them
   if (comment.email !== post.email) {
     const existing = await db.get(
-      `SELECT commenter_index
-         FROM pulse_commenters
-        WHERE post_id = ?
-          AND commenter_email = ?`,
+      `"SELECT commenter_index FROM pulse_commenters WHERE post_id = $1 AND commenter_email = $2"
+`,
       comment.post_id,
       comment.email
     );
@@ -377,16 +371,13 @@ socket.on("newComment", async (comment) => {
     if (!existing) {
       // find the current max index, default to 0
       const { commenter_index: max = 0 } = (await db.get(
-        `SELECT MAX(commenter_index) AS commenter_index
-           FROM pulse_commenters
-          WHERE post_id = ?`,
+        `SELECT MAX(commenter_index) AS commenter_index FROM pulse_commenters WHERE post_id = $1`,
         comment.post_id
       )) || {};
 
       const next = max + 1;
       await db.run(
-        `INSERT INTO pulse_commenters (post_id, commenter_email, commenter_index)
-         VALUES (?, ?, ?)`,
+        `INSERT INTO pulse_commenters (post_id, commenter_email, commenter_index) VALUES ($1, $2, $3)`,
         [comment.post_id,
         comment.email,
         next]
@@ -402,9 +393,7 @@ socket.on("newComment", async (comment) => {
 
   // now insert into pulse_comments (including email!)
   await db.run(
-    `INSERT INTO pulse_comments
-       (id, post_id, parent_id, message, timestamp, email)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO pulse_comments (id, post_id, parent_id, message, timestamp, email) VALUES ($1, $2, $3, $4, $5, $6)`,
     comment.id,
     comment.post_id,
     comment.parent_id,
