@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useConnection } from "context/connect";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleArrowUp,
   faCircleArrowDown,
   faComment,
   faImage,
   faFlag,
-  faExchange
+  faExchange,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Pulse() {
@@ -30,6 +31,8 @@ export default function Pulse() {
   const [repostModalOpen, setRepostModalOpen] = useState(false);
   const [replyToCommentId, setReplyToCommentId] = useState(null);
 
+  const feedRef = useRef(null);
+
   const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
   const formatTimeAgo = (timestamp) => {
@@ -45,7 +48,10 @@ export default function Pulse() {
     if (!connection) return;
     connection.emit("fetchPosts");
     connection.on("posts", setFeed);
-    connection.on("newPost", (post) => setFeed((p) => [post, ...p]));
+    connection.on("newPost", (post) => {
+      setFeed((p) => [post, ...p]);
+      if (feedRef.current) feedRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    });
     connection.on("voteUpdate", ({ id, votes }) => {
       setFeed((p) => p.map((x) => (x.id === id ? { ...x, votes } : x)));
     });
@@ -182,11 +188,12 @@ export default function Pulse() {
   };
 
   return (
-    <div className="h-screen max-w-xl mx-auto flex flex-col text-white p-4 relative">
+    <div className="h-[100dvh] md:h-screen max-w-xl mx-auto flex flex-col text-white p-4 relative">
       <button onClick={() => (window.location.href = "/rooms")} className="absolute top-4 left-4 bg-zinc-700 hover:bg-zinc-600 text-white px-3 py-1 rounded-md text-sm">←</button>
       <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-cyan-200 to-blue-900 bg-clip-text text-transparent">Pulse <span className="text-sm font-normal">(beta)</span></h1>
+      <button onClick={() => (window.location.href = "/profile")} className="absolute top-4 right-4 bg-zinc-700 hover:bg-zinc-600 text-white px-3 py-1 rounded-md text-sm"><FontAwesomeIcon icon={faUser} className="h-5 w-5" /></button>
 
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1">
+      <div ref={feedRef} className="flex-1 overflow-y-auto space-y-4 pr-1 pb-40">
         {feed.map((post) => (
           <motion.div key={post.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-zinc-800 p-4 rounded-lg shadow">
             {post.replied_to && (
@@ -212,9 +219,9 @@ export default function Pulse() {
         ))}
       </div>
 
-      <div className="mb-20 md:mb-0">
-        {imageFile && <img src={URL.createObjectURL(imageFile)} alt="Preview" className="w-full h-auto rounded-lg max-h-64 object-contain border border-zinc-700" />}
-        <form onSubmit={handlePost} className="pt-2 border-t border-zinc-700 flex flex-col gap-2">
+      <div className="sticky bottom-0 left-0 right-0 bg-zinc-900 pt-4 pb-6 px-2 border-t border-zinc-700">
+        {imageFile && <img src={URL.createObjectURL(imageFile)} alt="Preview" className="w-full h-auto rounded-lg max-h-64 object-contain border border-zinc-700 mb-2" />}
+        <form onSubmit={handlePost} className="flex flex-col gap-2">
           <input type="text" className="w-full p-3 rounded-md bg-zinc-800 border border-zinc-600 text-white" placeholder="What's happening?" value={message} onChange={(e) => setMessage(e.target.value)} />
           <label className="bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-md cursor-pointer w-fit text-sm">
             <FontAwesomeIcon icon={faImage} className="h-5 w-5" />

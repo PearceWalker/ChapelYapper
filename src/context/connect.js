@@ -20,6 +20,14 @@ export const Provider = ({ children }) => {
         socket.connect();
 
         socket.on('connect', () => {
+            const storedUsername = localStorage.getItem("username");
+            const storedEmail = localStorage.getItem("email");
+            if (storedUsername && storedEmail) {
+                socket.emit("login", { username: storedUsername });
+                socket.emit("email", { username: storedEmail });
+            }
+            
+      
             setConnection(socket);
         });
         

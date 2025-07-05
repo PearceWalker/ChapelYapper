@@ -10,8 +10,8 @@ let cachedPool = null;
 export async function getDbConnection() {
   if (cachedDb) return cachedDb;
 
-  // const isProd = process.env.NODE_ENV === 'production';
-  const isProd = true;
+  const isProd = process.env.NODE_ENV === 'production';
+  // const isProd = true;
 
 
   if (isProd) {

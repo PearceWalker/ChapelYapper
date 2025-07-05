@@ -21,6 +21,10 @@ export default function Home() {
         email: session.user.email,
       });
 
+      localStorage.setItem("username", session.user.name);
+      localStorage.setItem("email", session.user.email);
+
+
       connection.on("login", (res) => {
         if (res.success) {
           router.push("/rooms");

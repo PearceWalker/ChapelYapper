@@ -238,6 +238,26 @@ export default async function handler(req, res) {
       await db.run("DELETE FROM pulse_posts WHERE id = $1", [postId]);
 
     });
+
+     socket.on("deletePost", async ({ postId }) => {
+  console.log("DELETING POST:", postId);
+
+  try {
+    const result = await db.run("DELETE FROM pulse_posts WHERE id = $1", [postId]);
+    console.log("Delete result:", result);
+  } catch (err) {
+    console.error("Failed to delete post:", err);
+  }
+});
+
+  
+
+    socket.on("deleteComment", async ({ id }) => {
+  
+    await db.run("DELETE FROM pulse_comments WHERE id = $1", [id]);
+   
+});
+
     
 
     
@@ -350,6 +370,32 @@ export default async function handler(req, res) {
       socket.emit("comments", { postId, comments: rows });
     });
     
+
+    socket.on("fetchUserComments", async () => {
+  const user = socket.data.user;
+
+  if (!user || !user.email) {
+    socket.emit("userComments", []);
+    return;
+  }
+
+  try {
+    const rows = await db.all(
+      `SELECT c.*, pc.commenter_index 
+       FROM pulse_comments c 
+       LEFT JOIN pulse_commenters pc 
+       ON pc.post_id = c.post_id AND pc.commenter_email = c.email 
+       WHERE c.email = $1 
+       ORDER BY c.timestamp DESC`,
+      [user.email]
+    );
+    socket.emit("userComments", rows);
+  } catch (err) {
+    console.error("Error fetching user comments:", err);
+    socket.emit("userComments", []);
+  }
+});
+
 
 // Add new comment
 socket.on("newComment", async (comment) => {
