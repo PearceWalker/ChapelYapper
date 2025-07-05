@@ -287,14 +287,14 @@ function CreateRoom(){
   </div>
 ) : (
   <>
-    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-32" />
-    <h1 className="mx-auto text-3xl font-bold">ChapYapper</h1>
+    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-20 " />
+    <h1 className="mx-auto text-3xl font-bold p-4 ">ChapYapper</h1>
   </>
 )}
 
             
                 
-                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
+                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center ">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
             
                  <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
                  <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
@@ -353,7 +353,7 @@ function CreateRoom(){
         </div>
 
         {!onroom && 
-        <div className={`absolute top-0 h-screen w-full text-white p-6 md:hidden flex-col justify-between flex ${
+        <div className={`absolute t-0 h-screen w-full text-white p-6 md:hidden flex-col justify-between flex ${
         chapelTime ? "bg-[#661424]" : "bg-[var(--sidebar-color)]"
          }`}>
         <div className="flex flex-col items-center space-y-3">
@@ -364,16 +364,16 @@ function CreateRoom(){
   </div>
 ) : (
   <>
-    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-40" />
-    <h1 className="mx-auto text-5xl font-bold">ChapYapper</h1>
+    <img src="/assets/BetterLogoTiny.png" alt="Logo" className="mx-auto w-20 " />
+    <h1 className="mx-auto text-3xl font-bold p-4 ">ChapYapper</h1>
   </>
 )}
 
             
-                <button onClick={() => router.push('/rooms/create')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
+                <button onClick={() => router.push('/rooms/create')} className="w-full rounded-md px-4 py-4  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Create Group Chat<FontAwesomeIcon className=" h-3 mx-2" icon={faPlus} /> </button>
                 
-                 <button onClick={() => chatrandom()} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
-                 <button onClick={() => router.push('/pulse')} className="m-2 w-full rounded-md px-4 py-2  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
+                 <button onClick={() => chatrandom()} className=" w-full rounded-md px-4 py-4 text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Chat with stranger<FontAwesomeIcon className=" h-3 mx-2" icon={faUserSecret} /></button>
+                 <button onClick={() => router.push('/pulse')} className=" w-full rounded-md px-4 py-4  text-white-300 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition-all duration-200 flex flex-row items-center justify-center">Pulse (beta)<FontAwesomeIcon className=" h-3 mx-2" icon={faHeartbeat} /></button>
 
             </div>
             <div className="flex flex-col h-full mt-4 space-y-2">

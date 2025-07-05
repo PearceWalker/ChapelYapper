@@ -147,17 +147,26 @@ export default async function handler(req, res) {
         
         
         socket.on("votePost", async ({ id, type }) => {
-          try {
-            const change = type === "up" ? 1 : -1;
-            await db.run("UPDATE pulse_posts SET votes = votes + $1 WHERE id = $2", [change, id]);
+  try {
+    const row = await db.get("SELECT votes FROM pulse_posts WHERE id = ?", [id]);
 
-            await db.get("SELECT id, votes FROM pulse_posts WHERE id = $1", [id]);
+    if (!row) return;
 
-            io.emit("voteUpdate", updated);
-          } catch (err) {
-            console.error("Error updating vote:", err);
-          }
-        });
+    let newVotes = row.votes;
+
+    if (type === "up") newVotes += 1;
+    else if (type === "down") newVotes -= 1;
+
+    await db.run("UPDATE pulse_posts SET votes = ? WHERE id = ?", [newVotes, id]);
+
+    // Emit updated vote to everyone
+    io.emit("voteUpdate", { id, votes: newVotes });
+
+  } catch (err) {
+    console.error("Error updating vote:", err);
+  }
+});
+
 
         socket.on("reportPost", async (report) => {
           try {
