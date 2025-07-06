@@ -148,7 +148,7 @@ export default async function handler(req, res) {
         
         socket.on("votePost", async ({ id, type }) => {
   try {
-    const row = await db.get("SELECT votes FROM pulse_posts WHERE id = ?", [id]);
+    const row = await db.get("SELECT votes FROM pulse_posts WHERE id = $1", [id]);
 
     if (!row) return;
 
@@ -157,7 +157,7 @@ export default async function handler(req, res) {
     if (type === "up") newVotes += 1;
     else if (type === "down") newVotes -= 1;
 
-    await db.run("UPDATE pulse_posts SET votes = ? WHERE id = ?", [newVotes, id]);
+    await db.run("UPDATE pulse_posts SET votes = $1 WHERE id = $2", [newVotes, id]);
 
     // Emit updated vote to everyone
     io.emit("voteUpdate", { id, votes: newVotes });
