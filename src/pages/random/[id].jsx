@@ -52,6 +52,20 @@ export default function Room() {
     }
 
     useEffect(() => {
+    if (connection) {
+        connection.off('message').on('message', data => {
+            console.log("Received message from server:", data);
+            setMessages(messages => [...messages, data]);
+        });
+
+        return () => {
+            connection.off('message');
+        }
+    }
+}, [connection]);
+
+
+    useEffect(() => {
         if (connection) {
             connection.emit('fetchRooms');
             connection.on('rooms', data => {
@@ -413,12 +427,20 @@ export default function Room() {
                 <form onSubmit={e => {
                         e.preventDefault();
                         const message = e.target.message.value;
-                        if(!message?.length > 0 && !file)return
+                        console.log("Attempting to send message:", message,"file:", file);
+
+                        if(!message?.length > 0 && !file){
+                            console.log("No message or file to send.");
+                            return;
+                        }
                         if (message && !file) {
                             connection.emit('message', { message });
+                            console.log("Message emitted:", message);
                             e.target.message.value = '';
                         }else{
                             connection.emit('message', { message, file: file, type: filetype });
+                                    console.log("Message with file emitted:", message, file, filetype);
+
                             e.target.message.value = '';
                             setFile(null)
                         }
