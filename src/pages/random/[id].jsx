@@ -51,19 +51,7 @@ export default function Room() {
         });
     }
 
-    useEffect(() => {
-    if (connection) {
-        connection.off('message').on('message', data => {
-            console.log("Received message from server:", data);
-            setMessages(messages => [...messages, data]);
-        });
-
-        return () => {
-            connection.off('message');
-        }
-    }
-}, [connection]);
-
+   
 
     useEffect(() => {
         if (connection) {
@@ -175,6 +163,7 @@ export default function Room() {
     useEffect(() => {
         if (connection) {
             connection.off('message').on('message', data => {
+                console.log("Received message from server:", data);
                 setMessages(messages => [...messages, data]);
             });
 

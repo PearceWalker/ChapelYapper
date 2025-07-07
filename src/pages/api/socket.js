@@ -529,6 +529,7 @@ socket.on("newComment", async (comment) => {
     }
 
     socket.on("message", async data => {
+      console.log("Received message from client:", data);
       const room = Array.from(socket.rooms).find(room => room !== socket.id);
       const username = socket.data.user?.username;
 
