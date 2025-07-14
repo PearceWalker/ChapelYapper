@@ -531,10 +531,19 @@ socket.on("newComment", async (comment) => {
     socket.on("message", async data => {
       console.log("Received message from client:", data);
       const room = Array.from(socket.rooms).find(room => room !== socket.id);
+      console.log("Chosen room:", room);
       const username = socket.data.user?.username;
+      
+      const allRooms = Array.from(socket.rooms);
+      console.log("Socket is in rooms:", allRooms);
 
 
-      if (!room) return;
+
+
+      if (!room) {
+        console.warn("User tried to send a message but is not in a room.");
+        return;
+      }
 
       const roomInfo = io.sockets.adapter.rooms[room];
       const isAnon = roomInfo?.anonymous;
