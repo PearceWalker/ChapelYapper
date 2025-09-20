@@ -16,7 +16,7 @@ export const Provider = ({ children }) => {
     useEffect(() => {
         fetch("/api/socket");
 
-        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
+        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL , {
         transports: ["websocket"],
         secure: true,
         rejectUnauthorized: false,
